@@ -13,21 +13,21 @@ Po spuštění hry hráč odkryje minu levým tlačítkem myši, pravým tlačí
 Stisknutím tlačítka R se restartuje hra v aktuální obtížnosti.
 
 Hra používá následující knihovny:
-Pygame - pro renderování vizuálů hry
-Random - pro možnost náhodně vygenerovat hrací pole
-Time - pro snímání času pro skóre
+- Pygame - pro rendero- vání vizuálů hry
+- Random - pro možnost náhodně vygenerovat hrací pole
+- Time - pro snímání času pro skóre
 
 Dokumentace:
 program se skládá ze dvou hlavních souborů: funkce.py a miny.py
-v souboru funkce.py jsou definované hlavní funkce zodpovědné za fungování kódu
-v souboru miny.py je hlavní kód, který využívá funkce z druhého souboru, dále 
+- v souboru funkce.py jsou definované hlavní funkce zodpovědné za fungování kódu
+- v souboru miny.py je hlavní kód, který využívá funkce z druhého souboru, dále 
 jsou zde načteny vizuály a pár základních funkcí pro renderování okna a hry.
 oba soubory jsou blíže popsané jako součást kódu
 
-dále je v příloze dalších 15 png souborů ze kterých se skládá vizuál hry
+- dále je v příloze dalších 15 png souborů ze kterých se skládá vizuál hry
 
 Zdroje
-https://www.youtube.com/watch?v=y9VG3Pztok8&ab_channel=CodingWithRuss
-https://www.youtube.com/watch?v=8j7bkNXNx4M&ab_channel=AppleMaths
-http://datagenetics.com/blog/june12012/index.html
-https://www.pygame.org/docs/
+- https://www.youtube.com/watch?v=y9VG3Pztok8&ab_channel=CodingWithRuss
+- https://www.youtube.com/watch?v=8j7bkNXNx4M&ab_channel=AppleMaths
+- http://datagenetics.com/blog/june12012/index.html
+- https://www.pygame.org/docs/
