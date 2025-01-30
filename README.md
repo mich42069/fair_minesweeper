@@ -22,7 +22,7 @@ program se skládá ze dvou hlavních souborů: funkce.py a miny.py
 - v souboru funkce.py jsou definované hlavní funkce zodpovědné za fungování kódu
 - v souboru miny.py je hlavní kód, který využívá funkce z druhého souboru, dále 
 jsou zde načteny vizuály a pár základních funkcí pro renderování okna a hry.
-oba soubory jsou blíže popsané jako součást kódu
+- oba soubory jsou blíže popsané jako součást kódu
 
 - dále je v příloze dalších 15 png souborů ze kterých se skládá vizuál hry
 
