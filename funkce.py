@@ -69,32 +69,29 @@ def zero_chain(numberedgrid, grid, seenlist):
             numberedgrid[y][x] = 0
     return(numberedgrid, seenlist)
 
-def is_there_next_step(numberedgrid, grid): # the function that calculates if there is a next step
-    NoneCells = []
-    stepsgrid = empty_grid(len(grid[0]), len(grid))
-    
-    # the easy ones => number = uncovered mines
+def simple_filter(numberedgrid, grid, stepsgrid):
     for y, row in enumerate(numberedgrid):
         for x, cell in enumerate(row):
             if type(cell) == int and cell != 0:
                 NoneCells = []
                 FlagCells = []
-                for coordsur in surrounding_cells((x, y), grid): # for every surrounding cell
-                    if numberedgrid[coordsur[1]][coordsur[0]] == None: # makes a listo of uncovered cells around
+                for coordsur in surrounding_cells((x, y), grid):
+                    if numberedgrid[coordsur[1]][coordsur[0]] == None and stepsgrid[coordsur[1]][coordsur[0]] == None:
                         NoneCells.append((coordsur[0], coordsur[1]))
                         
-                    elif numberedgrid[coordsur[1]][coordsur[0]] == 'fl' and grid[coordsur[1]][coordsur[0]] == 1: # makes a list of flags around
+                    elif numberedgrid[coordsur[1]][coordsur[0]] == 'fl' and grid[coordsur[1]][coordsur[0]] == 1 or stepsgrid[coordsur[1]][coordsur[0]] == True:
                         FlagCells.append((coordsur[0], coordsur[1]))
                         
-                if len(NoneCells) + len(FlagCells) == cell: # if the combined amount of both equalls number of the center cell then all of them must be mines
+                if len(NoneCells) + len(FlagCells) == cell:
                     for coordofmine in NoneCells:
                         stepsgrid[coordofmine[1]][coordofmine[0]] = True
                         
-                if len(FlagCells) == cell: # if the number of all flags around equal number of center cell then the rest arent mines
+                if len(FlagCells) == cell:
                     for coordofnotmine in NoneCells:
                         stepsgrid[coordofnotmine[1]][coordofnotmine[0]] = False
-                        
-    # harder ones => usage of groups of surrounding squares
+    return stepsgrid
+
+def complex_filter(numberedgrid, grid, stepsgrid):
     edgecells = [] # a list of all cells that have a number and also have uncovered cells around
     for y, row in enumerate(numberedgrid):
         for x, cell in enumerate(row):
@@ -121,28 +118,20 @@ def is_there_next_step(numberedgrid, grid): # the function that calculates if th
                     stepsgrid[cell[1]][cell[0]] = True
                 for cell in sur_only:
                     stepsgrid[cell[1]][cell[0]] = False
+    return stepsgrid
+    
+def is_there_next_step(numberedgrid, grid): # the function that calculates if there is a next step
+    stepsgrid = empty_grid(len(grid[0]), len(grid))
+    
+    # the easy ones => number = uncovered mines
+    stepsgrid = simple_filter(numberedgrid, grid, stepsgrid)
+    
+    # harder ones => usage of groups of surrounding squares
+    stepsgrid = complex_filter(numberedgrid, grid, stepsgrid)
     
     # second pass of the easy filter with small changes, now knowing where cannot be mines due to the harder ones algorithm
-    for y, row in enumerate(numberedgrid):
-        for x, cell in enumerate(row):
-            if type(cell) == int and cell != 0:
-                NoneCells = []
-                FlagCells = []
-                for coordsur in surrounding_cells((x, y), grid):
-                    if numberedgrid[coordsur[1]][coordsur[0]] == None and stepsgrid[coordsur[1]][coordsur[0]] == None:
-                        NoneCells.append((coordsur[0], coordsur[1]))
-                        
-                    elif numberedgrid[coordsur[1]][coordsur[0]] == 'fl' and grid[coordsur[1]][coordsur[0]] == 1 or stepsgrid[coordsur[1]][coordsur[0]] == True:
-                        FlagCells.append((coordsur[0], coordsur[1]))
-                        
-                if len(NoneCells) + len(FlagCells) == cell:
-                    for coordofmine in NoneCells:
-                        stepsgrid[coordofmine[1]][coordofmine[0]] = True
-                        
-                if len(FlagCells) == cell:
-                    for coordofnotmine in NoneCells:
-                        stepsgrid[coordofnotmine[1]][coordofnotmine[0]] = False
-
+    stepsgrid = simple_filter(numberedgrid, grid, stepsgrid)
+    
     possible_step = False # if there is any possible step then it changes it to 1
     for row in stepsgrid:
         for cell in row:
