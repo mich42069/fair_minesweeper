@@ -2,8 +2,8 @@ import pygame
 from os import chdir
 from funkce import *
 import time
-#path = "C:/Users/lachi/OneDrive - Univerzita Karlova/Plocha/school/Cvika/Program Cvika/zapocet python done/Miny"
-#chdir(path)
+path = "C:/Users/lachi/OneDrive - Univerzita Karlova/Plocha/school/Cvika/Program Cvika/zapocet python done/Miny"
+chdir(path)
 
 pygame.init()
 pygame.font.init()
@@ -33,8 +33,6 @@ topbar = 80
 sidebar = 16
 cellsize = 32
 game_on = True
-won = False
-lost = False
 fps = 30
 gamefont = pygame.font.SysFont('Times New Roman', 80)
 optionsfont = pygame.font.SysFont('Arial', 64, True)
@@ -235,7 +233,7 @@ def draw_frame(game_window, uncovered_grid, cellsize):
     game_window.blit(text, pygame.Rect(game_width*cellsize + sidebar*2 - 100, 20, 80, 30))
     
     if won == True:
-        pygame.draw.rect(game_window, (255, 255, 0), pygame.Rect(game_width*cellsize // 2 - 20 + sidebar, 20, 40, topbar - 40))
+        pygame.draw.rect(game_window, (0, 255, 0), pygame.Rect(game_width*cellsize // 2 - 20 + sidebar, 20, 40, topbar - 40))
         text = topfont.render(':D', 1, pygame.Color('black'))
         game_window.blit(text, pygame.Rect(game_width*cellsize // 2 - 20 + sidebar, 20, 80, 30))
     elif lost == True:
@@ -274,6 +272,18 @@ while game_on:
                 start_game(game_height, game_width, number_of_mines)
                 players_mines = number_of_mines
                 real_mines = number_of_mines
+                possible_step, possibles_grid = is_there_next_step(uncovered_grid, grid)
+                
+            if event.key == pygame.K_c: # makes the game easy by automatically clickin on the known cells for the player
+                for y, row in enumerate(possibles_grid):
+                    for x, cell in enumerate(row):
+                        if cell:
+                            uncovered_grid[y][x] = 'fl'
+                            players_mines -= 1
+                            real_mines -= 1
+                        elif cell == False:
+                            uncovered_grid[y][x] = cell_number((x, y), grid)
+                uncovered_grid, seenlist = zero_chain(uncovered_grid, grid, seenlist)
                 possible_step, possibles_grid = is_there_next_step(uncovered_grid, grid)
             
         if not lost and not won: # only lets us use mouse if the game didnt end
