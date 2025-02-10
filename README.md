@@ -45,16 +45,16 @@ program se skládá ze dvou hlavních souborů: funkce.py a miny.py
     Podobně když se počet vlajek a jistých min v okolí společně s počtem neodkrytých okolních buněk rovná číslu buňky tak tyto neodkryté buňky jsou bomby a označeny za True
     vrací pole jistých kroků
 10. complex_filter(pole odkryté, pole min, pole jistých kroků):
-    vytvoří si list krajních buněk z odkrytého pole
-    pro každou tuto krajní buňku si to najde její dynamické číslo (číslo buňky minus počet jistých min a vlajek v okolí), list okolních krajních min, a také list okolních buňěk které zatím nejsou odkryty a nejsme si jisti zda na nich je nebo není mina
-    poté pro každou okolní krajní minu to najde její dynamické číslo a počet okolních buňěk kterými si nejsme jisti zda jsou miny.
-    následně to vytvoří dva listy nejistých buněk, jeden pouze z těch kolem 1. buňky a jeden pouze z naší 2. buňky
-    jestliže rozdíl dynamického čísla 1. buňky a dynamického čísla 1. buňky je roven velikosti listu 2. buňky tak to všechny buňky 1. listu v poli jistých kroků nastaví na False a naopak všechny buňky 2. listu v poli jistých kroků nastaví na True
-    vrací pole jistých kroků
+    - vytvoří si list krajních buněk z odkrytého pole 
+    - pro každou tuto krajní buňku si to najde její dynamické číslo (číslo buňky minus počet jistých min a vlajek v okolí), list okolních krajních min, a také list okolních buňěk které zatím nejsou odkryty a nejsme si jisti zda na nich je nebo není mina   
+    - poté pro každou okolní krajní minu to najde její dynamické číslo a počet okolních buňěk kterými si nejsme jisti zda jsou miny.
+    - následně to vytvoří dva listy nejistých buněk, jeden pouze z těch kolem 1. buňky a jeden pouze z naší 2. buňky    
+    - jestliže rozdíl dynamického čísla 2. buňky a dynamického čísla 1. buňky je roven velikosti listu 2. buňky tak to všechny buňky 1. listu v poli jistých kroků nastaví na False a naopak všechny buňky 2. listu v poli jistých kroků nastaví na True
+    - vrací pole jistých kroků
 11. is_there_next_step(odkryté pole, pole min):
-    vytvoří to prázdné pole jistých kroků se kterým provede simple_filter, complex_filter a opět simple_filter
-    poté si zkontroluje že je v tomto poli nějaký jakýkoliv jistý tah do proměnné possible_step
-    vrací tuto proměnnou possible_step a také list jistých tahů
+        vytvoří to prázdné pole jistých kroků se kterým provede simple_filter, complex_filter a opět simple_filter
+        poté si zkontroluje že je v tomto poli nějaký jakýkoliv jistý tah do proměnné possible_step
+        vrací tuto proměnnou possible_step a také list jistých tahů
 
 - v souboru miny.py je hlavní kód, který využívá funkce z druhého souboru, dále 
 jsou zde načteny vizuály a pár základních funkcí pro renderování okna a hry.
