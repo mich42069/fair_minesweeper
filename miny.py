@@ -2,8 +2,8 @@ import pygame
 from os import chdir
 from funkce import *
 import time
-path = "C:/Users/lachi/OneDrive - Univerzita Karlova/Plocha/school/Cvika/Program Cvika/zapocet python done/Miny"
-chdir(path)
+# path = "" # change to the path of this script
+# chdir(path)
 
 pygame.init()
 pygame.font.init()
