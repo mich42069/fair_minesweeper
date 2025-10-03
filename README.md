@@ -1,78 +1,117 @@
-Miny
-Implementace klasické hry Minesweeper s funkcionalitou "férovosti"
-Férovost znamená, že jsou přidána 2 nová pravidla
-1) jestliže hráč nemá žádnou 100% jistotu u žádné buňky tak platí, že ať klikne na jakoukoliv tak tam bomba nebude
-2) Jestliže hráč má 100% jistotu na nějaké buňce a rozhodne se kliknout jinam, tak na dané buňce vždy bomba bude a hráč prohraje
+# Minesweeper  
 
-How to play:
-po zapnutí hry se otevře okno s výběrem parametrů, zde si může hráč vybrat obtížnost,
-po výběru se hra sama zapne v novém okně, při výběru custom bude hráčovi nabídnuta možnost 
-sám si vybrat parametry hry, toto je přirozené číslo v rozmezí 1 - 999, zadá se stisknutím ENTER.
+Implementation of the classic game Minesweeper with "fairness" functionality.  
 
-Po spuštění hry hráč odkryje minu levým tlačítkem myši, pravým tlačítkem myši položí vlaječku.
-Stisknutím tlačítka R se restartuje hra v aktuální obtížnosti.
-Stisknutím tlačítka C se ohodnotí všechny buňky na, kterých je jistota existence či neexistence miny
+**Fairness** means that two new rules are added:  
+1. If the player has no 100% certainty about any cell, then no matter where they click, there will never be a bomb.  
+2. If the player does have 100% certainty about some cell and chooses to click elsewhere, then that cell will always contain a bomb, and the player loses.  
 
-Hra používá následující knihovny:
-- Pygame - pro rendero- vání vizuálů hry
-- Random - pro možnost náhodně vygenerovat hrací pole
-- Time - pro snímání času pro skóre
+---
 
-Dokumentace programu a funkcí:
-program se skládá ze dvou hlavních souborů: funkce.py a miny.py
-- v souboru funkce.py jsou definované hlavní funkce zodpovědné za fungování kódu
-- zde jsou následující funkce
-1. new_game_grid(šířka, výška, počet min)
-    - vrátí pole dane velikosti s 1 nebo 0 jako existence min
-2. empty_grid(šířka, výška) 
-    - vrátí pole None prvků o dané velikosti
-3. is_in_grid(šířka, výška, pozice ve tvaru (x, y))
-    - vrátí True zda leží v daném souřadnicovém prostoru
-4. surrounding_cells((x, y), grid)
-    - vrátí list všech buněk v okruhu 1 buňky
-5. cell_number((x, y), pole s bombama)
-    - spočítá a vrátí číslo buňky na základu počtu bomb v okolních buňkách
-    - toto je provedeno využitím funkce surrounding_cells, ze kterých se podívá, zda jejich souřadnice v poli s bombama dávají  1 a jestli ano tak přičtou k čísle buňky 1 
-6. lostgame(odkryté pole, pole bomb)
-    - vrátí plně odkryté pole, v případě, že celé odkryté není + označí špatně označené miny
-7. wongame(odkryté pole, pole bomb)
-    - vrátí plně odkryté pole, v případě, že celé odkryté není
-8. zero_chain(odkryté pole, pole bomb, list nulových buňěk)
-    - pro každou buňku z odkrytého pole která má číslo 0 a nenachází se v listu již odkrytých nulových buněk odkryje 8 okolních a přidá ji do listu odkrytých buňěk. Toto se opakuje dokud všechny 0 buňky nejsou v listu odkrytých nulových buňěk.
-    - následně vrátí pole odrytých buňěk a upravený list nulových buňěk
+## How to Play  
+When the game starts, a window with parameter selection opens, where the player can choose a difficulty.  
+After selecting, the game automatically launches in a new window.  
 
-9. simple_filter(pole odkryté, pole min, pole jistých kroků)
-    - pro každou buňku z odkrytých buněk se podívá jestli počet **správně položených vlajek** a počet **jistých min** v okolních buňkách roven **číslu buňky**, jestliže ano tak označí ostatní buňky, pro které platí, že nejsou označené v poli jistých kroků a zároveň ještě nejsou odkryté za **False**.
-    - Podobně, když se **počet vlajek** a **jistých min** v okolí společně s počtem **neodkrytých okolních buněk** rovná **číslu buňky** tak tyto neodkryté buňky jsou bomby a označeny za **True**
-    - vrací pole jistých kroků
-10. complex_filter(pole odkryté, pole min, pole jistých kroků):
-    - vytvoří si list **krajních buněk** z odkrytého pole 
-    - pro každou tuto **krajní buňku** si to najde její **_dynamické číslo_** (číslo buňky minus počet jistých min a vlajek v okolí), list **okolních krajních min**, a také list **okolních, dosud neohodnocených, buněk**
-    - poté pro každou _okolní_ **krajní** minu to najde její **dynamické číslo** a list **okolních neohodnocených buňěk**
-    - následně to vytvoří dva listy nejistých buněk, jeden pouze z těch kolem 1. buňky a jeden pouze z naší 2. buňky    
-    - jestliže rozdíl dynamického **čísla 2. buňky** a dynamického **čísla 1. buňky** je roven **velikosti listu 2. buňky** tak to všechny buňky 1. listu v poli jistých kroků nastaví na False a naopak všechny buňky 2. listu v poli jistých kroků nastaví na True
-    - vrací pole jistých kroků
-11. is_there_next_step(odkryté pole, pole min):
-    - vytvoří prázdné pole jistých kroků se kterým provede **simple_filter**, **complex_filter** a opět **simple_filter**
-    - poté si zkontroluje, že je v tomto poli nějaký jakýkoliv jistý tah, toto uloží do proměnné possible_step   
-    - vrací tuto proměnnou possible_step a také pole jistých tahů
+When selecting **custom**, the player is offered the option to set their own parameters. These must be natural numbers in the range **1–999**, confirmed by pressing **ENTER**.  
 
-V souboru miny.py je hlavní kód, který využívá funkce z druhého souboru, dále 
-jsou zde načteny vizuály a pár základních funkcí pro renderování okna a hry.
-Nachází se zdevykreslovací funkce, které není potřeba moc vysvětlovat:
-1. parameters()
-    - vytvoří okno ve kterém si hráč může zvolit jednu z obtížností, případně zvolit náhodnou obtížnost či obtížnost volitelných rozměrů a počtu min
-2. start_game(výška, šířka, počet min)
-    - nastartuje hru a nastaví hlavní proměnné a okno s herním polem
-3. draw_frame(okno, odkryté pole, velikost buňky)
-    - vykreslí daný stav hracího pole do okna pomocí spritů či textu
-v průběhu hry se každý frame program podívá zda hráč někam kliknul a na základě toho updatuje hrací pole. K tomu využívá funkce z funkce.py, na konci každého framu se vykreslí znovu stav hracího pole.
+- **Left mouse button** → reveal a mine  
+- **Right mouse button** → place a flag  
+- **R key** → restart the game at the current difficulty  
+- **C key** → evaluate all cells where the existence or non-existence of a mine is certain  
 
-- oba soubory jsou blíže popsané jako součást kódu
-- dále je v příloze dalších 15 png souborů ze kterých se skládá vizuál hry
+---
 
-Zdroje
-- https://www.youtube.com/watch?v=y9VG3Pztok8&ab_channel=CodingWithRuss
-- https://www.youtube.com/watch?v=8j7bkNXNx4M&ab_channel=AppleMaths
-- http://datagenetics.com/blog/june12012/index.html
-- https://www.pygame.org/docs/
+## Libraries Used  
+- **Pygame** – for rendering the game visuals  
+- **Random** – for generating the playing field randomly  
+- **Time** – for recording elapsed time for the score  
+
+---
+
+## Program and Function Documentation  
+
+Even though the documentation is written in english functions and their parameters may be in Czech. 
+
+The program consists of two main files: **funkce.py** and **miny.py**  
+
+### `funkce.py`  
+This file defines the main functions responsible for the game logic:  
+
+1. **new_game_grid(width, height, number of mines)**  
+   - returns a grid of given size with `1` or `0` representing the existence of a mine  
+
+2. **empty_grid(width, height)**  
+   - returns a grid of `None` elements of the given size  
+
+3. **is_in_grid(width, height, position(x, y))**  
+   - returns `True` if the position lies within the given coordinate space  
+
+4. **surrounding_cells((x, y), grid)**  
+   - returns a list of all cells in the 1-cell radius  
+
+5. **cell_number((x, y), grid of mines)**  
+   - calculates and returns the number of the cell based on the number of bombs in the surrounding cells  
+   - done using `surrounding_cells`, checking whether their coordinates in the bomb grid equal `1`, and incrementing the count accordingly  
+
+6. **lostgame(uncovered grid, grid of mines)**  
+   - returns a fully revealed grid if it is not already fully revealed + marks incorrectly flagged mines  
+
+7. **wongame(uncovered grid, grid of mines)**  
+   - returns a fully revealed grid if it is not already fully revealed  
+
+8. **zero_chain(uncovered grid, grid of mines, list nulových buňěk)**  
+   - for every cell in the revealed grid with value `0` that is not yet in the list of revealed zero cells, it reveals the 8 surrounding cells and adds it to the list  
+   - this repeats until all zero cells are included in the list  
+   - finally returns the revealed grid and the updated list of zero cells  
+
+9. **simple_filter(uncovered grid, grid of mines, known moves grid)**  
+   - for each revealed cell, it checks whether the number of **correctly placed flags** and the number of **certain mines** in the surrounding cells equals the **cell’s number**. If yes, then all other cells (not in the list of certain steps and not yet revealed) are marked as **False**.  
+   - similarly, if the **number of flags** and **certain mines** in the surroundings together with the number of **unrevealed surrounding cells** equals the **cell’s number**, then those unrevealed cells are bombs and marked as **True**  
+   - returns the grid of certain steps  
+
+10. **complex_filter(uncovered grid, grid of mines, known moves grid)**  
+   - creates a list of **border cells** from the revealed grid  
+   - for each of these **border cells**, it finds its **dynamic number** (cell number minus the number of certain mines and flags in the surroundings), the list of **surrounding border mines**, and also the list of **surrounding unevaluated cells**  
+   - then, for each surrounding **border mine**, it finds its **dynamic number** and the list of **surrounding unevaluated cells**  
+   - two lists of uncertain cells are then created: one only from those around the 1st cell, and one only from those around the 2nd cell  
+   - if the difference between the **dynamic number of the 2nd cell** and the **dynamic number of the 1st cell** equals the **size of the 2nd list**, then all cells from the 1st list are set to **False** in the grid of certain steps, and all cells from the 2nd list are set to **True**  
+   - returns the grid of certain steps  
+
+11. **is_there_next_stepuncovered grid, grid of mines)**  
+   - creates an empty grid of certain steps, applies **simple_filter**, **complex_filter**, and **simple_filter** again  
+   - then checks whether there is any certain move in this grid, stores this in the variable `possible_step`  
+   - returns this variable `possible_step` along with the grid of certain steps  
+
+---
+
+### `miny.py`  
+This file contains the main game code, using functions from `funkce.py`.  
+It also loads visuals and contains basic functions for rendering the game window and board.  
+
+#### Rendering functions:  
+
+1. **parameters()**  
+   - creates a window where the player can choose one of the difficulties, or choose a random difficulty, or custom dimensions and number of mines  
+
+2. **start_game(height, width, number of mines)**  
+   - starts the game and sets the main variables and the game board window  
+
+3. **draw_frame(window, uncovered grid, size of a cell in pixels)**  
+   - renders the current state of the game field into the window using sprites or text  
+
+During the game, in every frame, the program checks whether the player clicked anywhere and updates the playing field accordingly, using functions from `funkce.py`.  
+At the end of every frame, the state of the playing field is re-rendered.  
+
+---
+
+## Additional Information  
+- Both files are described in more detail as part of the code.  
+- Additionally, 15 PNG files are included, which make up the game’s visuals.  
+
+---
+
+## Sources  
+- [CodingWithRuss - YouTube](https://www.youtube.com/watch?v=y9VG3Pztok8&ab_channel=CodingWithRuss)  
+- [AppleMaths - YouTube](https://www.youtube.com/watch?v=8j7bkNXNx4M&ab_channel=AppleMaths)  
+- [DataGenetics Blog](http://datagenetics.com/blog/june12012/index.html)  
+- [Pygame Documentation](https://www.pygame.org/docs/)  
